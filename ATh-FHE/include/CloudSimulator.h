@@ -1,27 +1,27 @@
-
 #ifndef CLOUD_SIMULATOR_H
 #define CLOUD_SIMULATOR_H
 
-#include "CryptoManager.h"
-#include "MiddlewareCore.h"
-#include <string>
+#include <iostream>
 #include <vector>
+#include <string>
+#include "openfhe.h"
+
+using namespace lbcrypto;
 
 class CloudSimulator {
 public:
-    CloudSimulator(const std::string& cloudName, const CryptoManager& cryptoMgr);
-
-    // Simulate Cloud A receiving and processing telemetry data
-    Ciphertext<DCRTPoly> processCloudNodeData(const std::vector<double>& telemetryData);
-
-    // Simulate secure multi-cloud aggregation
-    Ciphertext<DCRTPoly> aggregateCloudData(const Ciphertext<DCRTPoly>& cipher1, const Ciphertext<DCRTPoly>& cipher2);
-
-    std::string getCloudName() const;
+    CloudSimulator();
+    
+    // Simulate splitting and dispatching encrypted data to multi-cloud nodes (AWS & Azure)
+    std::vector<double> simulateMultiCloudSplit(
+        CryptoContext<DCRTPoly> cc, 
+        Ciphertext<DCRTPoly> ciphertext, 
+        PrivateKey<DCRTPoly> privateKey
+    );
 
 private:
-    std::string name;
-    CryptoManager cryptoManager;
+    void sendToAWSNode(const std::string& nodeName, const std::vector<double>& chunkData);
+    void sendToAzureNode(const std::string& nodeName, const std::vector<double>& chunkData);
 };
 
 #endif // CLOUD_SIMULATOR_H
